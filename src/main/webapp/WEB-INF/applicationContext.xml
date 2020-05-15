@@ -29,10 +29,27 @@
      http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
 
    <!-- in-memory database and a datasource -->
+   <!-- 
     <jdbc:embedded-database id="dataSource">
         <jdbc:script location="classpath:database/jpetstore-hsqldb-schema.sql"/>
         <jdbc:script location="classpath:database/jpetstore-hsqldb-dataload.sql"/>
     </jdbc:embedded-database>
+     -->
+    <!--  -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+          p:driverClassName="org.mariadb.jdbc.Driver" 
+          p:url="jdbc:mariadb://mariadb-0.mariadb.mariadb.svc.cluster.local:3306/lena"
+          p:username="lena" p:password="lena01"/>
+          
+ 	<!-- 
+	<bean id="dataSource"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/lena</value>
+		</property>
+	</bean>
+	 -->
+
 
     <!-- transaction manager, use DataSourceTransactionManager" for JDBC local tx -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

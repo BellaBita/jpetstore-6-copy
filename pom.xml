@@ -119,6 +119,11 @@
       <artifactId>hsqldb</artifactId>
       <version>${hsqldb.version}</version>
     </dependency>
+	<dependency>
+	    <groupId>org.mariadb.jdbc</groupId>
+	    <artifactId>mariadb-java-client</artifactId>
+	    <version>${mariadb.version}</version>
+	</dependency>
 
     <!-- Test dependencies -->
     <dependency>
@@ -292,6 +297,7 @@
     <assertj.version>3.15.0</assertj.version>
     <mockito.version>3.3.3</mockito.version>
     <hsqldb.version>2.5.0</hsqldb.version>
+    <mariadb.version>1.4.6</mariadb.version>
     <module.name>org.mybatis.jpetstore</module.name>
 
     <!-- Remove after parent 32 (support for jdk 13) -->
