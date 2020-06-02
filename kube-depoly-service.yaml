@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lena-jpetstore
+spec:
+  selector:
+    matchLabels:
+      type: lena-jpetstore
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  minReadySeconds: 10
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        type: lena-jpetstore
+    spec:
+      containers:
+      - name: lena-jpetstore
+        image: lenasupport/jpetstore:_tag_
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8180
+        envFrom:
+        - configMapRef:
+            name: configmap-lena-jpetstore
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8180
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8180
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      terminationGracePeriodSeconds: 0
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-lena-jpetstore
+data:
+  LENA_CONFIG_TEMPLATE_DOWNLOAD: "Y"
+  LENA_CONFIG_TEMPLATE_ID: "jpetstore"
+  LENA_MANAGER_ADDRESS: "lena-manager.default.svc.cluster.local:7700"
+  LENA_MANAGER_KEY: "p5IsZQME5ORlIf2hbi0ooyXzpHD7Tz6gjc9yYySyU7VxsBD508y0O%2BBa6jiC4aiHLdr%2BXhCYzSNNxWkkKNM1ow%3D%3D"
+  LENA_LICENSE_DOWNLOAD_URL: "manager"
+  LENA_CONTRACT_CODE: "pghzJJqTdzaGtTuASr8yfw=="
+  JAVA_DOMAIN_CACHE_TTL: "3"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lena-jpetstore
+spec:
+  selector:
+    type: lena-jpetstore
+  ports:
+  - port: 8180
+    targetPort: 8180
