@@ -17,6 +17,8 @@ package org.mybatis.jpetstore.web.actions;
 
 import java.io.Serializable;
 
+import org.springframework.web.context.ContextLoader;
+
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.SimpleMessage;
@@ -47,5 +49,13 @@ public abstract class AbstractActionBean implements ActionBean, Serializable {
   public void setContext(ActionBeanContext context) {
     this.context = context;
   }
+  
+	protected <T> T getSpringBean(Class<T> requiredType) {
+		return ContextLoader.getCurrentWebApplicationContext().getBean(requiredType);
+	}
+	
+	protected Object getSpringBean(String beanName) {
+		return ContextLoader.getCurrentWebApplicationContext().getBean(beanName);
+	}
 
 }
