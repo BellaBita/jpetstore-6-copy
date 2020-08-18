@@ -1,0 +1,70 @@
+import java.io.File;
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class Parser {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		Document doc = Jsoup.parse(new File("./INPUT/input.html"), "UTF-8");
+
+		Elements elms = doc.select("div[data-viewname=DChattingRoomTextMessageItemView]");
+
+		for (Element elm : elms) {
+			Message msg = new Message(elm);
+			if (msg.writter.contains(" ")) {
+				System.out.println(msg);
+			}
+		}
+
+	}
+
+	public static class Message {
+		public Message(Element elm) {
+			this.writter = getWritter(elm);
+			this.message = getContent(elm);
+			String[] dateArr = getDate(elm).replaceAll("[^\\d\\s]", "").split("\\s");
+			String[] timeArr = getTime(elm).split(":");
+			timeArr[0] = timeArr[0].replaceAll("\\D", "");
+			if (timeArr[0].contains("오후")) {
+				timeArr[0] = Integer.toString(Integer.parseInt(timeArr[0]) + 12);
+			}
+			this.timeStamp = String.format("%4s-%02d-%02dT%02d:%2s", dateArr[0], Integer.parseInt(dateArr[1]),
+					Integer.parseInt(dateArr[2]), Integer.parseInt(timeArr[0]), timeArr[1]);
+		}
+
+		String writter;
+		String message;
+		String timeStamp;
+
+		public String toString() {
+			return String.format("%s  %s %s", this.writter.split("\\s")[0], this.message, this.timeStamp);
+		}
+	}
+
+	private static String getDate(Element elm) {
+		Element daily = elm.parent().parent();
+		Element e = daily.selectFirst("div.logEvent");
+		return e.text();
+	}
+
+	private static String getWritter(Element elm) {
+		Element e = elm.selectFirst("button[data-uiselector=writerName]");
+		return e.text();
+	}
+
+	private static String getTime(Element elm) {
+		Element e = elm.selectFirst("span.time");
+		return e.text();
+	}
+
+	private static String getContent(Element elm) {
+		Element e = elm.selectFirst("span._messageContent");
+		return e.text();
+	}
+
+}
